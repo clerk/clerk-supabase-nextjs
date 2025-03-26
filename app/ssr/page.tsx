@@ -1,5 +1,6 @@
 import { createClerkSupabaseClientSsr } from './client';
 import AddTaskForm from './AddTaskForm';
+import { Database } from '../../database.types';
 
 export default async function Home() {
   // Use the custom Supabase client you created
@@ -17,8 +18,8 @@ export default async function Home() {
       <h1>Tasks</h1>
 
       <div>
-        {tasks?.map((task: any) => (
-          <p>{task.name}</p>
+        {tasks?.map((task: Database['public']['Tables']['tasks']['Row']) => (
+          <p key={task.id}>{task.name}</p>
         ))}
       </div>
 
