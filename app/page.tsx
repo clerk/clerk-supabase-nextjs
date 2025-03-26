@@ -3,8 +3,10 @@ import { useEffect, useState } from 'react';
 import { useSession, useUser } from '@clerk/nextjs';
 import { createClient } from '@supabase/supabase-js';
 
+import type { Database } from '../database.types';
+
 export default function Home() {
-  const [tasks, setTasks] = useState<any[]>([]);
+  const [tasks, setTasks] = useState<Database['public']['Tables']['tasks']['Row'][]>([]);
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState('');
   // The `useUser()` hook will be used to ensure that Clerk has loaded data about the logged in user
@@ -75,7 +77,7 @@ export default function Home() {
 
       {!loading &&
         tasks.length > 0 &&
-        tasks.map((task: any) => <p>{task.name}</p>)}
+        tasks.map((task: Database['public']['Tables']['tasks']['Row']) => <p key={task.id}>{task.name}</p>)}
 
       {!loading && tasks.length === 0 && <p>No tasks found</p>}
 
