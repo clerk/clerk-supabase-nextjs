@@ -1,12 +1,12 @@
-'use client';
-import { useEffect, useState } from 'react';
-import { useSession, useUser } from '@clerk/nextjs';
-import { createClient } from '@supabase/supabase-js';
+"use client";
+import { useEffect, useState } from "react";
+import { useSession, useUser } from "@clerk/nextjs";
+import { createClient } from "@supabase/supabase-js";
 
 export default function Home() {
   const [tasks, setTasks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   // The `useUser()` hook will be used to ensure that Clerk has loaded data about the logged in user
   const { user } = useUser();
   // The `useSession()` hook will be used to get the Clerk session object
@@ -18,23 +18,8 @@ export default function Home() {
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_KEY!,
       {
-        global: {
-          // Get the custom Supabase token from Clerk
-          fetch: async (url, options = {}) => {
-            const clerkToken = await session?.getToken({
-              template: 'supabase',
-            });
-
-            // Insert the Clerk Supabase token into the headers
-            const headers = new Headers(options?.headers);
-            headers.set('Authorization', `Bearer ${clerkToken}`);
-
-            // Now call the default fetch
-            return fetch(url, {
-              ...options,
-              headers,
-            });
-          },
+        async accessToken() {
+          return session?.getToken() ?? null;
         },
       }
     );
@@ -50,7 +35,7 @@ export default function Home() {
 
     async function loadTasks() {
       setLoading(true);
-      const { data, error } = await client.from('tasks').select();
+      const { data, error } = await client.from("tasks").select();
       if (!error) setTasks(data);
       setLoading(false);
     }
@@ -61,7 +46,7 @@ export default function Home() {
   async function createTask(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     // Insert task into the "tasks" database
-    await client.from('tasks').insert({
+    await client.from("tasks").insert({
       name,
     });
     window.location.reload();
@@ -75,7 +60,7 @@ export default function Home() {
 
       {!loading &&
         tasks.length > 0 &&
-        tasks.map((task: any) => <p>{task.name}</p>)}
+        tasks.map((task: any) => <p key={task.id}>{task.name}</p>)}
 
       {!loading && tasks.length === 0 && <p>No tasks found</p>}
 

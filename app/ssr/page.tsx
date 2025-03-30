@@ -1,12 +1,12 @@
-import { createClerkSupabaseClientSsr } from './client';
-import AddTaskForm from './AddTaskForm';
+import { createServerSupabaseClient } from "./client";
+import AddTaskForm from "./AddTaskForm";
 
 export default async function Home() {
   // Use the custom Supabase client you created
-  const client = createClerkSupabaseClientSsr();
+  const client = createServerSupabaseClient();
 
   // Query the 'tasks' table to render the list of tasks
-  const { data, error } = await client.from('tasks').select();
+  const { data, error } = await client.from("tasks").select();
   if (error) {
     throw error;
   }
@@ -18,7 +18,7 @@ export default async function Home() {
 
       <div>
         {tasks?.map((task: any) => (
-          <p>{task.name}</p>
+          <p key={task.id}>{task.name}</p>
         ))}
       </div>
 
