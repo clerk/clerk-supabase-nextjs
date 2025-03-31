@@ -34,10 +34,11 @@
 Integrating Supabase with Clerk gives you the benefits of using a Supabase database while leveraging Clerk's authentication, prebuilt components, and webhooks. To get the most out of Supabase with Clerk, you must implement custom [Row Level Security](https://supabase.com/docs/guides/auth/row-level-security) (RLS) policies.
 
 After following [the Clerk + Supabase integration guide](https://clerk.com/docs/integrations/databases/supabase), you will have learned how to:
-  - Create RLS policies that restrict access to data based on the user's Clerk ID. This way, users can only access data that belongs to them.
-  - Configure Supabase to accept JWTs from Clerk
-  - Create a JWT template in Clerk to generate Supabase JWTs
-  - Use the Supabase JWTs to authenticate Supabase queries in your Next.js app
+
+- Enable the Supabase integration on your Clerk instance
+- Create RLS policies that restrict access to data based on the user's Clerk ID. This way, users can only access data that belongs to them.
+- Configure Clerk as a Supabase third-party auth provider
+- Use Clerk JWTs to authenticate Supabase queries in your Next.js app
 
 ## Deploy
 
@@ -83,4 +84,3 @@ Feel free to create a support thread on our [Discord](https://clerk.com/discord)
 You can discuss ideas, ask questions, and meet others from the community in our [Discord](https://discord.com/invite/b5rXHjAg7A).
 
 If you prefer, you can also find support through our [Twitter](https://twitter.com/ClerkDev), or you can [email](mailto:support@clerk.dev) us!
-
