@@ -13,12 +13,14 @@ export default async function Home() {
   const tasks = data;
 
   return (
-    <div>
-      <h1>Tasks</h1>
+    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h1 className="text-2xl font-semibold tracking-tight">Tasks</h1>
 
       <div>
         {tasks?.map((task: any) => (
-          <p key={task.id}>{task.name}</p>
+          <p key={task.id} className="mt-3 rounded-md bg-slate-50 px-3 py-2">
+            {task.name}
+          </p>
         ))}
       </div>
 
