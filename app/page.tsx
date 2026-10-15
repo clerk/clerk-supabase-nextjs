@@ -52,7 +52,7 @@ export default function Home() {
     loadTasks()
   }, [isLoaded, user])
 
-  async function createTask(e: React.FormEvent<HTMLFormElement>) {
+  async function createTask(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
     const trimmedName = name.trim()
     if (!trimmedName) return
@@ -75,32 +75,40 @@ export default function Home() {
   }
 
   return (
-    <div>
-      <h1>Tasks</h1>
+    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h1 className="text-2xl font-semibold tracking-tight">Tasks</h1>
 
-      {loading && <p>Loading...</p>}
+      {loading && <p className="mt-4 text-slate-600">Loading...</p>}
 
-      {isLoaded && !user && !loading && <p>Sign in to view your tasks.</p>}
+      {isLoaded && !user && !loading && <p className="mt-4 text-slate-600">Sign in to view your tasks.</p>}
 
       {isLoaded &&
         user &&
         !loading &&
         tasks.length > 0 &&
-        tasks.map((task: any) => <p key={task.id}>{task.name}</p>)}
+        tasks.map((task: any) => (
+          <p key={task.id} className="mt-3 rounded-md bg-slate-50 px-3 py-2">
+            {task.name}
+          </p>
+        ))}
 
-      {isLoaded && user && !loading && tasks.length === 0 && <p>No tasks found</p>}
+      {isLoaded && user && !loading && tasks.length === 0 && <p className="mt-4 text-slate-600">No tasks found</p>}
 
       {isLoaded && user && (
-        <form onSubmit={createTask}>
+        <form onSubmit={createTask} className="mt-6 flex gap-3">
           <input
             autoFocus
             type="text"
             name="name"
             placeholder="Enter new task"
+            aria-label="Task name"
+            className="min-w-0 flex-1 rounded-md border border-slate-300 px-3 py-2 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-400"
             onChange={(e) => setName(e.target.value)}
             value={name}
           />
-          <button type="submit">Add</button>
+          <button type="submit" className="rounded-md bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700">
+            Add
+          </button>
         </form>
       )}
     </div>
