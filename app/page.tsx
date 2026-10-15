@@ -52,7 +52,7 @@ export default function Home() {
     loadTasks()
   }, [isLoaded, user])
 
-  async function createTask(e: React.FormEvent<HTMLFormElement>) {
+  async function createTask(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault()
     const trimmedName = name.trim()
     if (!trimmedName) return
@@ -101,7 +101,8 @@ export default function Home() {
             type="text"
             name="name"
             placeholder="Enter new task"
-            className="min-w-0 flex-1 rounded-md border border-slate-300 px-3 py-2 focus:border-slate-500 focus:outline-none"
+            aria-label="Task name"
+            className="min-w-0 flex-1 rounded-md border border-slate-300 px-3 py-2 focus:border-slate-500 focus:outline-none focus:ring-2 focus:ring-slate-400"
             onChange={(e) => setName(e.target.value)}
             value={name}
           />
