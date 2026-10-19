@@ -1,7 +1,7 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
 
-// This proxy does not protect any routes by default.
-// See https://clerk.com/docs/reference/nextjs/clerk-middleware for more information about configuring your proxy.
+// clerkMiddleware() does not protect any routes by default.
+// See https://clerk.com/docs/reference/nextjs/clerk-middleware for configuration details.
 export default clerkMiddleware();
 
 export const config = {
