@@ -17,7 +17,7 @@ export default async function Home() {
       <h1 className="text-2xl font-semibold tracking-tight">Tasks</h1>
 
       <div>
-        {tasks?.map((task: any) => (
+        {tasks?.map((task) => (
           <p key={task.id} className="mt-3 rounded-md bg-slate-50 px-3 py-2">
             {task.name}
           </p>

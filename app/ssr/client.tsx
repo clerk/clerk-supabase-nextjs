@@ -9,6 +9,6 @@ export function createServerSupabaseClient() {
       async accessToken() {
         return (await auth()).getToken();
       },
-    }
+    },
   );
 }
