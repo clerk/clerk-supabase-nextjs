@@ -1,20 +1,26 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSession, useUser } from "@clerk/nextjs";
 import { createClient } from "@supabase/supabase-js";
 
+type Task = { id: string | number; name: string };
+
 export default function Home() {
-  const [tasks, setTasks] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loadedForSessionId, setLoadedForSessionId] = useState<string | null>(
+    null,
+  );
   const [name, setName] = useState("");
   // The `useUser()` hook is used to ensure that Clerk has loaded data about the signed in user
   const { isLoaded, user } = useUser();
   // The `useSession()` hook is used to get the Clerk session object
   // The session object is used to get the Clerk session token
   const { session } = useSession();
+  const sessionId = session?.id ?? null;
+  const loading = !isLoaded || (!!user && loadedForSessionId !== sessionId);
 
   // Create a custom Supabase client that injects the Clerk session token into the request headers
-  function createClerkSupabaseClient() {
+  const client = useMemo(() => {
     return createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
@@ -22,55 +28,50 @@ export default function Home() {
         async accessToken() {
           return session?.getToken() ?? null;
         },
-      }
+      },
     );
-  }
+  }, [session]);
 
   // This `useEffect` will wait for the User object to be loaded before requesting
   // the tasks for the signed in user
   useEffect(() => {
-    if (!isLoaded) {
-      return
+    if (!isLoaded || !user || !sessionId) {
+      return;
     }
 
-    if (!user) {
-      setTasks([])
-      setName('')
-      setLoading(false)
-      return
-    }
-
+    let active = true;
     async function loadTasks() {
-      setLoading(true)
       // Create a `client` object for accessing Supabase data using the Clerk token
-      const client = createClerkSupabaseClient()
-      const { data, error } = await client.from('tasks').select()
-      if (!error) setTasks(data)
-      setLoading(false)
+      const { data, error } = await client.from("tasks").select();
+      if (!active) return;
+      setTasks(error ? [] : (data ?? []));
+      setLoadedForSessionId(sessionId);
     }
 
-    loadTasks()
-  }, [isLoaded, user])
+    loadTasks();
+    return () => {
+      active = false;
+    };
+  }, [client, isLoaded, sessionId, user]);
 
   async function createTask(e: React.SubmitEvent<HTMLFormElement>) {
-    e.preventDefault()
-    const trimmedName = name.trim()
-    if (!trimmedName) return
+    e.preventDefault();
+    const trimmedName = name.trim();
+    if (!trimmedName) return;
 
     // Create a `client` object for accessing Supabase data using the Clerk token
-    const client = createClerkSupabaseClient()
     // Insert task into the "tasks" database
     const { data, error } = await client
-      .from('tasks')
+      .from("tasks")
       .insert({
         name: trimmedName,
       })
       .select()
-      .single()
+      .single();
 
     if (!error && data) {
-      setTasks((currentTasks) => [...currentTasks, data])
-      setName('')
+      setTasks((currentTasks) => [...currentTasks, data]);
+      setName("");
     }
   }
 
@@ -80,19 +81,23 @@ export default function Home() {
 
       {loading && <p className="mt-4 text-slate-600">Loading...</p>}
 
-      {isLoaded && !user && !loading && <p className="mt-4 text-slate-600">Sign in to view your tasks.</p>}
+      {isLoaded && !user && !loading && (
+        <p className="mt-4 text-slate-600">Sign in to view your tasks.</p>
+      )}
 
       {isLoaded &&
         user &&
         !loading &&
         tasks.length > 0 &&
-        tasks.map((task: any) => (
+        tasks.map((task) => (
           <p key={task.id} className="mt-3 rounded-md bg-slate-50 px-3 py-2">
             {task.name}
           </p>
         ))}
 
-      {isLoaded && user && !loading && tasks.length === 0 && <p className="mt-4 text-slate-600">No tasks found</p>}
+      {isLoaded && user && !loading && tasks.length === 0 && (
+        <p className="mt-4 text-slate-600">No tasks found</p>
+      )}
 
       {isLoaded && user && (
         <form onSubmit={createTask} className="mt-6 flex gap-3">
@@ -106,7 +111,10 @@ export default function Home() {
             onChange={(e) => setName(e.target.value)}
             value={name}
           />
-          <button type="submit" className="rounded-md bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700">
+          <button
+            type="submit"
+            className="rounded-md bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700"
+          >
             Add
           </button>
         </form>
