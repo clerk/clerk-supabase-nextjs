@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSession, useUser } from "@clerk/nextjs";
 import { createClient } from "@supabase/supabase-js";
 
@@ -20,7 +20,7 @@ export default function Home() {
   const loading = !isLoaded || (!!user && loadedForSessionId !== sessionId);
 
   // Create a custom Supabase client that injects the Clerk session token into the request headers
-  const client = useMemo(() => {
+  const createClerkSupabaseClient = useCallback(() => {
     return createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
@@ -42,6 +42,7 @@ export default function Home() {
     let active = true;
     async function loadTasks() {
       // Create a `client` object for accessing Supabase data using the Clerk token
+      const client = createClerkSupabaseClient();
       const { data, error } = await client.from("tasks").select();
       if (!active) return;
       setTasks(error ? [] : (data ?? []));
@@ -52,7 +53,7 @@ export default function Home() {
     return () => {
       active = false;
     };
-  }, [client, isLoaded, sessionId, user]);
+  }, [createClerkSupabaseClient, isLoaded, sessionId, user]);
 
   async function createTask(e: React.SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -60,6 +61,7 @@ export default function Home() {
     if (!trimmedName) return;
 
     // Create a `client` object for accessing Supabase data using the Clerk token
+    const client = createClerkSupabaseClient();
     // Insert task into the "tasks" database
     const { data, error } = await client
       .from("tasks")

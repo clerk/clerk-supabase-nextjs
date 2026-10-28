@@ -2,10 +2,9 @@
 
 import { createServerSupabaseClient } from "./client";
 
-const client = createServerSupabaseClient();
-
 export async function addTask(name: string) {
   try {
+    const client = createServerSupabaseClient();
     const response = await client.from("tasks").insert({
       name,
     });

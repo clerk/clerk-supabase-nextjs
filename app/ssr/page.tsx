@@ -1,7 +1,9 @@
+import { connection } from "next/server";
 import { createServerSupabaseClient } from "./client";
 import AddTaskForm from "./AddTaskForm";
 
 export default async function Home() {
+  await connection();
   // Use the custom Supabase client you created
   const client = createServerSupabaseClient();
 
