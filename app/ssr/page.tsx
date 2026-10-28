@@ -1,8 +1,17 @@
 import { connection } from "next/server";
+import { Suspense } from "react";
 import { createServerSupabaseClient } from "./client";
 import AddTaskForm from "./AddTaskForm";
 
-export default async function Home() {
+export default function Home() {
+  return (
+    <Suspense>
+      <Tasks />
+    </Suspense>
+  );
+}
+
+async function Tasks() {
   await connection();
   // Use the custom Supabase client you created
   const client = createServerSupabaseClient();
