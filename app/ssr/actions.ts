@@ -2,17 +2,23 @@
 
 import { createServerSupabaseClient } from "./client";
 
-const client = createServerSupabaseClient();
-
 export async function addTask(name: string) {
   try {
+    const client = createServerSupabaseClient();
     const response = await client.from("tasks").insert({
       name,
     });
 
-    console.log("Task successfully added!", response);
-  } catch (error: any) {
-    console.error("Error adding task:", error.message);
+    if (response.error) {
+      throw response.error;
+    }
+
+    console.log("Task successfully added!");
+  } catch (error) {
+    console.error(
+      "Error adding task:",
+      error instanceof Error ? error.message : error,
+    );
     throw new Error("Failed to add task");
   }
 }

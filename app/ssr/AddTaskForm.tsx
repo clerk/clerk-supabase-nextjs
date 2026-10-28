@@ -1,15 +1,15 @@
-'use client';
-import React, { useState } from 'react';
-import { addTask } from './actions';
-import { useRouter } from 'next/navigation';
+"use client";
+import React, { useState } from "react";
+import { addTask } from "./actions";
+import { useRouter } from "next/navigation";
 
 function AddTaskForm() {
-  const [taskName, setTaskName] = useState('');
+  const [taskName, setTaskName] = useState("");
   const router = useRouter();
 
   async function onSubmit() {
     await addTask(taskName);
-    setTaskName('');
+    setTaskName("");
     router.refresh();
   }
 
@@ -25,7 +25,10 @@ function AddTaskForm() {
         onChange={(e) => setTaskName(e.target.value)}
         value={taskName}
       />
-      <button type="submit" className="rounded-md bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700">
+      <button
+        type="submit"
+        className="rounded-md bg-slate-900 px-4 py-2 font-medium text-white hover:bg-slate-700"
+      >
         Add
       </button>
     </form>
