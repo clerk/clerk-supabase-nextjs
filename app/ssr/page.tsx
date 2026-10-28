@@ -5,7 +5,7 @@ import AddTaskForm from "./AddTaskForm";
 
 export default function Home() {
   return (
-    <Suspense>
+    <Suspense fallback={<p className="text-slate-600">Loading...</p>}>
       <Tasks />
     </Suspense>
   );
