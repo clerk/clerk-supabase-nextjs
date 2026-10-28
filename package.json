@@ -6,26 +6,25 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint .",
+    "lint": "eslint",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@clerk/nextjs": "^7.9.1",
+    "@clerk/nextjs": "^7.9.21",
     "@supabase/supabase-js": "^2.49.4",
-    "next": "^16.4.2",
-    "react": "^19.1.4",
-    "react-dom": "^19.1.4"
+    "next": "^16.4.3",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.3.3",
+    "@tailwindcss/turbopack": "^4.3.3",
     "@types/node": "^22.20.5",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "eslint": "^9.39.5",
-    "eslint-config-next": "^16.4.2",
-    "postcss": "^8.5.15",
+    "eslint-config-next": "^16.4.3",
     "prettier": "^3.9.10",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3"
