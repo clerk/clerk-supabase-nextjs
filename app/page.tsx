@@ -1,5 +1,11 @@
 "use client";
-import { useCallback, useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { useSession, useUser } from "@clerk/nextjs";
 import { createClient } from "@supabase/supabase-js";
 
@@ -16,8 +22,20 @@ export default function Home() {
   // The `useSession()` hook is used to get the Clerk session object
   // The session object is used to get the Clerk session token
   const { session } = useSession();
+  const userId = user?.id ?? null;
   const sessionId = session?.id ?? null;
   const loading = !isLoaded || (!!user && loadedForSessionId !== sessionId);
+  const lastUserIdRef = useRef<string | null>(null);
+
+  // Clear the task draft when the signed-in user changes
+  useLayoutEffect(() => {
+    if (!isLoaded) return;
+
+    if (lastUserIdRef.current !== null && lastUserIdRef.current !== userId) {
+      setName("");
+    }
+    lastUserIdRef.current = userId;
+  }, [isLoaded, userId]);
 
   // Create a custom Supabase client that injects the Clerk session token into the request headers
   const createClerkSupabaseClient = useCallback(() => {
