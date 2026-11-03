@@ -28,7 +28,7 @@ export default function Home() {
   const lastUserIdRef = useRef<string | null>(null);
 
   // Clear the task draft when the signed-in user changes
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!isLoaded) return;
 
     if (lastUserIdRef.current !== null && lastUserIdRef.current !== userId) {
